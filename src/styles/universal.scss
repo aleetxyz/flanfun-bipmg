@@ -1,0 +1,148 @@
+@import "./typography.scss";
+
+* {
+  font-family: var(--text-font);
+  color: black;
+  box-sizing: border-box;
+  user-select: none;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+p,
+strong,
+em,
+b,
+i {
+  font-size: 1.0625rem;
+  line-height: 1.25rem;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+/* ---- HEADS ---- */
+*:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--head-font);
+  transform: scaleY(1.0625);
+  font-weight: 300;
+  color: white;
+}
+
+h1 {
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 4rem;
+  line-height: 4.5rem;
+  letter-spacing: -1px;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 3.75rem;
+    line-height: 4.25rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 3.5rem;
+    line-height: 4rem;
+  }
+
+  @media screen and (max-width: 576px) {
+    font-size: 2.75rem;
+    line-height: 3.25rem;
+  }
+}
+
+h2 {
+  font-family: var(--title-font);
+  font-size: 2rem;
+  line-height: 3rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1.75rem;
+    line-height: 2.75rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 1.5rem;
+    line-height: 2.5rem;
+  }
+}
+
+h3 {
+  font-size: 1.875rem;
+  line-height: 2rem;
+
+  @media screen and (max-width: 576px) {
+    font-size: 1.625rem;
+    line-height: 1.875rem;
+  }
+}
+
+/* ---- IMPL SPECIFIC ---- */
+:root {
+  --out-main: #00f3ff;
+  --out-compl: #ff0052;
+  --out-third: #9e00ff;
+  --out-accent: #ffef00;
+  --out-black: #000000;
+}
+
+/* --- GLOBAL SELECTORS ---- */
+ul {
+  list-style: none;
+}
+
+img {
+  user-select: none;
+}
+
+/* --- CLASS SELECTORS ---- */
+.full-scr {
+  pointer-events: all;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+}
+
+.h-full {
+  max-height: 100%;
+  height: 100%;
+}
+
+.vh-full {
+  max-height: 100vh;
+  height: 100vh;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+.self-mid {
+  align-self: center;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+.fade-out {
+  transition: opacity 0.33s ease-out;
+  opacity: 0;
+}
+
+.nowrap {
+  flex-wrap: nowrap;
+}

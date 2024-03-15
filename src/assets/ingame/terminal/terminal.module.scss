@@ -1,0 +1,50 @@
+.oks {
+  color: var(--out-main) !important;
+  font-family: var(--segm-font);
+}
+
+.err {
+  color: var(--out-compl) !important;
+  font-family: var(--segm-font);
+}
+
+.input-text {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--out-black);
+  font-family: var(--segm-font);
+  padding: 1rem;
+  border: unset;
+  outline: none;
+}
+
+.screen-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.screen-cont {
+  padding: 0.5rem;
+  background: var(--out-black);
+  font-family: var(--segm-font);
+  word-break: break-all;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.screen-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 320px;
+  height: 320px;
+  font-size: 1.5rem;
+}
+
+.screen-wide {
+  width: 640px;
+  height: 480px;
+}

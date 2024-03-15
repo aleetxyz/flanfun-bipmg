@@ -1,0 +1,57 @@
+.timeline {
+  position: fixed;
+  z-index: 11;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.timeline-itm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.carousel-item {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.33s ease-in;
+
+  &:focus {
+    filter: none !important;
+  }
+
+  &:hover {
+    filter: none !important;
+    cursor: pointer;
+  }
+}
+
+.item-legend {
+  padding: 0.125rem 1rem;
+}
+
+.segment-14 {
+  font-family: var(--segm-font);
+}
+
+.segment-wrap {
+  background-color: var(--out-accent);
+  border-radius: 0.125rem;
+  padding: 0.75rem;
+}
+
+.segment-disp {
+  background-color: black;
+
+  > p {
+    user-select: none;
+    padding: 0.5rem;
+    color: cyan;
+  }
+}

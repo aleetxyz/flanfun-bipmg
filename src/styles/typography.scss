@@ -1,0 +1,15 @@
+:root {
+  --title-font: "RocketClouds";
+  --head-font: "playfair";
+  --text-font: "bariol";
+  --segm-font: "segment14";
+}
+
+@font-face {
+  font-family: "segment14";
+  font-display: swap;
+  font-style: normal;
+  text-rendering: optimizeLegibility;
+  src: url("/fonts/segment.ttf") format("truetype");
+  font-weight: 300;
+}
