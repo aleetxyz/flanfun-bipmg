@@ -11,6 +11,7 @@ export default function PointerRaycaster(context, dst = 10.0, first = true) {
   raycaster.firstHitOnly = first;
   const pointer = new Vector2();
   let isDragging = false;
+  let paused = false;
 
   const disableDragging = () => {
     isDragging = false;
@@ -22,7 +23,7 @@ export default function PointerRaycaster(context, dst = 10.0, first = true) {
 
   const castFromPointer = (e) => {
     /* Ignore if pointer is dragging or if capture is paused */
-    if (!isDragging) {
+    if (!isDragging && !paused) {
       pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(pointer, context.camera);
@@ -36,6 +37,8 @@ export default function PointerRaycaster(context, dst = 10.0, first = true) {
       }
     }
   };
+
+  this.pause = () => (paused = true);
 
   this.getScene = () => {
     return context.scene;

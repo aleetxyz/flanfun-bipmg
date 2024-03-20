@@ -1,0 +1,48 @@
+.sta-overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  backdrop-filter: blur(2px);
+  pointer-events: all;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32rem;
+  flex-direction: column;
+}
+
+.text-input {
+  background-color: unset;
+  backdrop-filter: blur(2px);
+  border-bottom: 1px solid white;
+}
+
+.begin-btn {
+  padding: 0.5rem 2rem;
+  background: unset;
+  backdrop-filter: blur(2px);
+  border-radius: 4px;
+  border: 1px solid white;
+  color: white;
+}
+
+.winner {
+  position: fixed;
+  text-shadow: black 2px 2px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  text-align: center;
+}

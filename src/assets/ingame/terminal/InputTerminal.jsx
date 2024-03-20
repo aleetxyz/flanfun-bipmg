@@ -22,6 +22,7 @@ const c = classnames.bind(styles);
 export default function InputTerminal(props) {
   const { rcaster, scene, context, screenId, screenData, riddle } = props;
   const { setFocusing } = props;
+  const { transceiver } = props;
 
   const textureLoader = useInstance(TextureLoader);
   const canvas = useInstance(OffscreenCanvas, 320, 320);
@@ -56,15 +57,40 @@ export default function InputTerminal(props) {
     });
   }, [context.camera, screenData.xyz, screenData.eye]);
 
-  useEffect(() => {
-    rcaster.subscribe("raycast_result", (name) => {
+  const isOkay = useCallback(
+    () => text === String(riddle?.answer).toLowerCase(),
+    [text, riddle?.answer]
+  );
+
+  const onRaycast = useCallback(
+    (name) => {
       if (name === screenId) {
         focus.current.focus();
         focusOnTerminal();
         setFocusing(true);
       }
-    });
-  }, [rcaster, screenId, focusOnTerminal, setFocusing]);
+    },
+    [focusOnTerminal, setFocusing, screenId]
+  );
+
+  useEffect(() => {
+    rcaster.subscribe("raycast_result", onRaycast);
+    return () => rcaster.unsubscribe("raycast_result", onRaycast);
+  }, [rcaster, screenId, focusOnTerminal, setFocusing, onRaycast]);
+
+  const onTextMP = useCallback(
+    (data) => {
+      if (data.screenId === screenId) {
+        setText(data.text);
+      }
+    },
+    [screenId]
+  );
+
+  useEffect(() => {
+    transceiver.subscribe("player:action", onTextMP);
+    return () => transceiver.unsubscribe("player:action", onTextMP);
+  }, [transceiver, onTextMP]);
 
   useEffect(() => {
     if (canvas) {
@@ -94,13 +120,15 @@ export default function InputTerminal(props) {
         object3d.material.map = texture;
         object3d.material.needsUpdate = true;
       });
+
+      if (isOkay()) {
+        transceiver.sendText(screenId, text);
+      }
     }
-  }, [text, canvas, scene, screenId, textureLoader]);
+  }, [text, canvas, scene, screenId, textureLoader, transceiver, isOkay]);
 
   const onChange = (evt) => setText(String(evt.target.value).toLowerCase());
   const debouncedOnChange = throttle(onChange, 100);
-
-  const isOkay = () => text === String(riddle?.answer).toLowerCase();
 
   return (
     <div>
@@ -116,6 +144,8 @@ export default function InputTerminal(props) {
       <input
         ref={focus}
         type="text"
+        tabIndex={-1}
+        disabled={isOkay()}
         onFocus={focusOnTerminal}
         onChange={debouncedOnChange}
         maxLength={64}

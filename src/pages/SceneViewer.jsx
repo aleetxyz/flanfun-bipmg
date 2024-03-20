@@ -1,12 +1,16 @@
 import { useEffect, useRef, useCallback, useState } from "react";
+import { useParams } from "react-router-dom";
 import classnames from "classnames/bind";
 
+import { client } from "infra/wsmp/MultiplayerClient";
 import SceneContext from "fractable-min/SceneContext";
 import SceneLoader from "fractable-min/SceneLoader";
 import SceneEnvironment from "fractable-min/SceneEnvironment";
 import OrbitController from "fractable-min/OrbitController";
 import PointerRaycaster from "fractable-min/raycaster/PointerRaycaster";
+import ActionTransceiver from "infra/wsmp/ActionTransceiver";
 
+import Bip39Overlay from "components/BIP39Overlay";
 import InputTerminal from "assets/ingame/terminal/InputTerminal";
 import terminals from "assets/ingame/terminal/terminals";
 
@@ -14,6 +18,7 @@ import useInstance from "../hooks/useInstance";
 import { AmbientLight } from "three";
 
 import style from "pages/minigames/bip39/bip39.module.scss";
+import { generateUUID } from "three/src/math/MathUtils";
 const c = classnames.bind(style);
 
 const configuration = {
@@ -24,34 +29,34 @@ const configuration = {
     orbit: { minDst: 1, maxDst: 2.5 },
   },
   scene: {
-    gltf: "https://192.168.1.58:5443/scenes/$flan_desk/screens.glb",
-    rgbe: "https://192.168.1.58:5443/hdri/royal_esplanade_1k.hdr",
+    gltf: "https://192.168.30.247:5443/scenes/$flan_desk/screens.glb",
+    rgbe: "https://192.168.30.247:5443/hdri/royal_esplanade_1k.hdr",
   },
   fonts: {
-    primary: "https://192.168.1.58:5443/fonts/segment.ttf",
+    primary: "https://192.168.30.247:5443/fonts/segment.ttf",
   },
 };
 
 const screensApi = {
   Screen1: {
     number: 1024,
-    answer: "kesito petit suiss",
+    answer: "owo",
   },
   Screen2: {
     number: 3072,
-    answer: "el ticher",
+    answer: "owo",
   },
   Screen3: {
     number: 16384,
-    answer: "hola",
+    answer: "owo",
   },
   Screen4: {
     number: 15072,
-    answer: "jaguar yu",
+    answer: "owo",
   },
   Screen5: {
     number: 2048,
-    answer: "ola",
+    answer: "owo",
   },
   Screen6: {
     number: 640,
@@ -75,10 +80,13 @@ const screensApi = {
   },
 };
 
+const euid = generateUUID();
+
 export default function SceneViewer() {
   const canvas = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [focus, setFocus] = useState(false);
+  const { uuid } = useParams();
 
   /** @type {SceneContext} */
   const context = useInstance(SceneContext, canvas);
@@ -90,6 +98,8 @@ export default function SceneViewer() {
   const rcaster = useInstance(PointerRaycaster, context);
   /** @type {SceneLoader} */
   const loader = useInstance(SceneLoader);
+  /** @type {PlayerTransceiver} */
+  const txrx = useInstance(ActionTransceiver, client);
 
   const renderSceneMemoized = useCallback(async () => {
     await scenenv.stageEnvironment(configuration.scene);
@@ -102,20 +112,17 @@ export default function SceneViewer() {
     context.scene.add(tfgl.scene);
     setLoaded(true);
 
-    rcaster.capture();
-
     context.traverseScene();
     context.playScene();
     loader.dispose();
 
     window.addEventListener("resize", context.handleResize, false);
-  }, [context, scenenv, loader, rcaster]);
+  }, [context, scenenv, loader]);
 
   useEffect(() => {
-    if (!context?.inited) {
-      context.initialize();
-      return;
-    } else if (loader.checkSupport(context)) {
+    context.initialize();
+    if (loader.checkSupport(context)) {
+      client.connect(uuid || euid);
       renderSceneMemoized();
     } else {
       return;
@@ -124,7 +131,7 @@ export default function SceneViewer() {
     return () => {
       window.removeEventListener("resize", context.handleResize, true);
     };
-  }, [renderSceneMemoized, context, orbiter, loader]);
+  }, [renderSceneMemoized, context, orbiter, loader, uuid]);
 
   const unfocus = () => {
     const [cx, cy, cz] = configuration.camera.xyz;
@@ -137,16 +144,10 @@ export default function SceneViewer() {
   return (
     <>
       <div id="owo" ref={canvas} style={{ width: "100vw", height: "100vh" }} />
-      <div
-        style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
-          display: "flex",
-          flexWrap: "wrap",
-          zIndex: -1,
-        }}
-      >
+      {/* START GAME OVERLAY */}
+      <Bip39Overlay transceiver={txrx} rcaster={rcaster} puid={uuid || euid} />
+      {/* IFRAM GAME OVERLAY */}
+      <div className={c("ifm-overlay")}>
         {loaded &&
           Object.keys(terminals).map((key) => (
             <InputTerminal
@@ -158,12 +159,16 @@ export default function SceneViewer() {
               riddle={screensApi[key]}
               rcaster={rcaster}
               setFocusing={setFocus}
+              transceiver={txrx}
             />
           ))}
       </div>
       {focus && (
-        <button className={c("btn-unfocus")} onClick={unfocus}>
-          RETURN
+        <button
+          className={c("btn-unfocus", "begin-btn", "bg-white", "p-2")}
+          onClick={unfocus}
+        >
+          UNFOCUS
         </button>
       )}
     </>
