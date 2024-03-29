@@ -189,11 +189,25 @@ export default function Bip39Overlay(props) {
                     navigator.clipboard.writeText(url);
                   }}
                 >
-                  {"INVITE SOMEONE <CLICK HERE TO COPY>"}
+                  {"INVITE SOMEONE"}
+                </p>
+                <p
+                  className={c("font-pixelated", "text-neutral-50", "text-2xl")}
+                  style={{ userSelect: "text", cursor: "pointer" }}
+                  onClick={() => {
+                    const url = `${window.location.href}${props.puid}`;
+                    navigator.clipboard.writeText(url);
+                  }}
+                >
+                  {"<CLICK HERE TO COPY>"}
                 </p>
                 <p
                   className={c("font-pixelated", "text-neutral-50", "text-sm")}
-                  style={{ userSelect: "text", cursor: "pointer" }}
+                  style={{
+                    userSelect: "text",
+                    cursor: "pointer",
+                    maxWidth: "320px",
+                  }}
                   onClick={() => {
                     const url = `${window.location.href}${props.puid}`;
                     navigator.clipboard.writeText(url);

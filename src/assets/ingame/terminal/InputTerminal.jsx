@@ -171,6 +171,7 @@ export default function InputTerminal(props) {
         onFocus={focusOnTerminal}
         onChange={debouncedOnChange}
         maxLength={32}
+        className={c("inputss")}
       />
     </div>
   );

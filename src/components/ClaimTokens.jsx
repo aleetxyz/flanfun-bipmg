@@ -44,7 +44,7 @@ export default function ClaimTokens(props) {
       );
       if (result.data.balance >= 1) {
         setMinting(0);
-        setBalance(0);
+        setBalance(result.data.balance);
       }
     };
     if (minting === 2) {

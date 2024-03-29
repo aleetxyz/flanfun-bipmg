@@ -200,14 +200,12 @@ export default function SceneViewer() {
             />
           ))}
       </div>
-      {focus && (
-        <button
-          className={c("btn-unfocus", "begin-btn", "bg-white", "p-2")}
-          onClick={unfocus}
-        >
-          UNFOCUS (Esc)
-        </button>
-      )}
+      <button
+        className={c("btn-unfocus", "begin-btn", "bg-white", "p-2")}
+        onClick={unfocus}
+      >
+        unfocus (Esc)
+      </button>
     </>
   );
 }
