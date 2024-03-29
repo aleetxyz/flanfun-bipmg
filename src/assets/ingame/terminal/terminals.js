@@ -1,17 +1,17 @@
 const terminals = {
   // BOTTOM RITE
   Screen1: {
-    xyz: [0.45, 2.8, 0.3],
+    xyz: [0.45, 3.05, 0.3],
     eye: [0.6, 2.8, -10],
   },
   //CENTER SCREEN
   Screen2: {
-    xyz: [-0.85, 2.5, 0.35],
-    eye: [-9.5, 1.8, -10],
+    xyz: [-0.85, 2.75, 0.35],
+    eye: [-9.5, 2.2, -10],
   },
   // BOTTOM LEFT
   Screen3: {
-    xyz: [-1, 1.7, 0.38],
+    xyz: [-1, 1.9, 0.38],
     eye: [-11.5, 5.9, -12],
   },
   // CENTER LEFT LEFT

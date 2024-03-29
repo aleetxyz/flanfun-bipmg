@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import classnames from "classnames/bind";
 
 import { client } from "infra/wsmp/MultiplayerClient";
@@ -19,6 +20,8 @@ import { AmbientLight } from "three";
 
 import style from "pages/minigames/bip39/bip39.module.scss";
 import { generateUUID } from "three/src/math/MathUtils";
+
+const { VITE_APP_STATIC_URL } = import.meta.env;
 const c = classnames.bind(style);
 
 const configuration = {
@@ -29,11 +32,11 @@ const configuration = {
     orbit: { minDst: 1, maxDst: 2.5 },
   },
   scene: {
-    gltf: "https://192.168.30.247:5443/scenes/$flan_desk/screens.glb",
-    rgbe: "https://192.168.30.247:5443/hdri/royal_esplanade_1k.hdr",
+    gltf: `${VITE_APP_STATIC_URL}/scenes/$flan_desk/draco.glb`,
+    rgbe: `${VITE_APP_STATIC_URL}/hdri/royal_esplanade_1k.hdr`,
   },
   fonts: {
-    primary: "https://192.168.30.247:5443/fonts/segment.ttf",
+    primary: `${VITE_APP_STATIC_URL}/fonts/segment.ttf`,
   },
 };
 
@@ -60,23 +63,23 @@ const screensApi = {
   },
   Screen6: {
     number: 640,
-    answer: "krayola",
+    answer: "owo",
   },
   Screen7: {
     number: 128,
-    answer: "bonyu",
+    answer: "owo",
   },
   Screen8: {
     number: 5124,
-    answer: "ECSDEE",
+    answer: "owo",
   },
   Screen9: {
     number: 22,
-    answer: "eltacker",
+    answer: "owo",
   },
   Screen10: {
     number: 876,
-    answer: "underteiker",
+    answer: "owo",
   },
 };
 
@@ -88,6 +91,8 @@ export default function SceneViewer() {
   const [focus, setFocus] = useState(false);
   const { uuid } = useParams();
 
+  /** @type {Web3} */
+  //const web3 = useInstance(Web3, magic.rpcProvider);
   /** @type {SceneContext} */
   const context = useInstance(SceneContext, canvas);
   /** @type {SceneEnvironment} */
@@ -133,6 +138,8 @@ export default function SceneViewer() {
     };
   }, [renderSceneMemoized, context, orbiter, loader, uuid]);
 
+  const { primaryWallet } = useDynamicContext();
+
   const unfocus = () => {
     const [cx, cy, cz] = configuration.camera.xyz;
     const [ex, ey, ez] = configuration.camera.eye;
@@ -143,7 +150,36 @@ export default function SceneViewer() {
 
   return (
     <>
-      <div id="owo" ref={canvas} style={{ width: "100vw", height: "100vh" }} />
+      <div
+        id="owo"
+        ref={canvas}
+        style={{ width: "100vw", height: "100vh", backgroundColor: " black" }}
+      />
+      {primaryWallet?.address && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            right: 0,
+            zIndex: 10,
+            padding: "10px",
+            width: "10rem",
+            backgroundColor: "white",
+            margin: "1rem",
+          }}
+        >
+          <p
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              lineBreak: "anywhere",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {primaryWallet?.address}
+          </p>
+        </div>
+      )}
       {/* START GAME OVERLAY */}
       <Bip39Overlay transceiver={txrx} rcaster={rcaster} puid={uuid || euid} />
       {/* IFRAM GAME OVERLAY */}
@@ -160,6 +196,7 @@ export default function SceneViewer() {
               rcaster={rcaster}
               setFocusing={setFocus}
               transceiver={txrx}
+              unfocus={unfocus}
             />
           ))}
       </div>
@@ -168,7 +205,7 @@ export default function SceneViewer() {
           className={c("btn-unfocus", "begin-btn", "bg-white", "p-2")}
           onClick={unfocus}
         >
-          UNFOCUS
+          UNFOCUS (Esc)
         </button>
       )}
     </>

@@ -41,10 +41,38 @@
   flex-direction: column;
   width: 320px;
   height: 320px;
-  font-size: 1.5rem;
+
+  > * {
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+  }
 }
 
 .screen-wide {
-  width: 640px;
-  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 320px;
+  height: 320px;
+
+  > * {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+}
+
+.blinking-cursor {
+  font-size: 1.5rem;
+  color: cyan;
+}
+
+@keyframes blink {
+  from,
+  to {
+    color: transparent;
+  }
+  50% {
+    color: cyan;
+  }
 }

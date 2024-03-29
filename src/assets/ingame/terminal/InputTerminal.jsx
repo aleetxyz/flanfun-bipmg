@@ -64,6 +64,7 @@ export default function InputTerminal(props) {
 
   const onRaycast = useCallback(
     (name) => {
+      console.log(name);
       if (name === screenId) {
         focus.current.focus();
         focusOnTerminal();
@@ -130,16 +131,37 @@ export default function InputTerminal(props) {
   const onChange = (evt) => setText(String(evt.target.value).toLowerCase());
   const debouncedOnChange = throttle(onChange, 100);
 
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        props.unfocus();
+      }
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [props]);
+
+  const isSquare = () => {
+    return ["Screen1", "Screen3", "Screen4", "Screen6", "Screen8"].some(
+      (el) => el === screenId
+    );
+  };
+
   return (
     <div>
       <div
         ref={screen}
         id={screenId}
-        className={c("screen-cont", "screen-square")}
+        className={c(
+          "screen-cont",
+          isSquare() ? "screen-square" : "screen-wide"
+        )}
       >
         <p className={c(isOkay() ? "oks" : "err")}>{riddle?.number}</p>
-        <br />
-        <p className={c(isOkay() ? "oks" : "err")}>{text}</p>
+        <p className={c(isOkay() ? "oks" : "err")}>
+          {text}
+          <span className={c("blinking-cursor")}>_</span>
+        </p>
       </div>
       <input
         ref={focus}
@@ -148,7 +170,7 @@ export default function InputTerminal(props) {
         disabled={isOkay()}
         onFocus={focusOnTerminal}
         onChange={debouncedOnChange}
-        maxLength={64}
+        maxLength={32}
       />
     </div>
   );

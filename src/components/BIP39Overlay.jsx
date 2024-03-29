@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import classnames from "classnames/bind";
 
 import PlayersTransceiver from "infra/wsmp/ActionTransceiver";
+import ClaimTokens from "./ClaimTokens";
 
 import style from "./bip39.module.scss";
 import flanfun from "assets/flanfun/flanfun.png";
@@ -22,8 +23,6 @@ export default function Bip39Overlay(props) {
   const { uuid } = useParams();
 
   const [countdown, setcountdown] = useState(4);
-
-  console.log("RERENDER", players);
 
   useEffect(() => {
     const onUpdate = (players) => setPlayers(players);
@@ -81,8 +80,8 @@ export default function Bip39Overlay(props) {
         <div
           className={c("flex", "items-center", "justify-center", "w-[32rem]")}
         >
-          <img src={flanfun} className={c("h-[128px]")} draggable={false} />
-          <img src={bip39} className={c("h-[128px]")} draggable={false} />
+          <img src={flanfun} className={c("h-[96px]")} draggable={false} />
+          <img src={bip39} className={c("h-[96px]")} draggable={false} />
         </div>
         {countdown > 3 && (
           <>
@@ -114,7 +113,8 @@ export default function Bip39Overlay(props) {
                   "font-pixelated",
                   "text-neutral-50",
                   "text-2xl",
-                  "p-2"
+                  "p-2",
+                  "w-[14rem]"
                 )}
               />
               <button
@@ -183,12 +183,21 @@ export default function Bip39Overlay(props) {
               <>
                 <p
                   className={c("font-pixelated", "text-neutral-50", "text-2xl")}
+                  style={{ userSelect: "text", cursor: "pointer" }}
+                  onClick={() => {
+                    const url = `${window.location.href}${props.puid}`;
+                    navigator.clipboard.writeText(url);
+                  }}
                 >
-                  INVITE SOMEONE
+                  {"INVITE SOMEONE <CLICK HERE TO COPY>"}
                 </p>
                 <p
-                  className={c("font-pixelated", "text-neutral-50", "text-xl")}
-                  style={{ userSelect: "text" }}
+                  className={c("font-pixelated", "text-neutral-50", "text-sm")}
+                  style={{ userSelect: "text", cursor: "pointer" }}
+                  onClick={() => {
+                    const url = `${window.location.href}${props.puid}`;
+                    navigator.clipboard.writeText(url);
+                  }}
                 >
                   {`${window.location.href}${props.puid}`}
                 </p>
@@ -220,21 +229,7 @@ export default function Bip39Overlay(props) {
           </li>
         ))}
       </ul>
-      {winner && (
-        <div className={c("sta-overlay")}>
-          <div className={c("winner")} style={{ textShadow: "black 2px 2px" }}>
-            <p
-              className={c("font-pixelated", "text-neutral-50", "text-4xl")}
-            >{`THE WINNER IS ${winner.name}`}</p>
-            {name === winner.name && (
-              <button className={c("begin-btn")}>GET MY TOKENS</button>
-            )}
-            {name !== winner.name && (
-              <button className={c("begin-btn")}>OK, SNIF SNIF</button>
-            )}
-          </div>
-        </div>
-      )}
+      {winner && <ClaimTokens winner={winner} name={name} />}
     </>
   );
 }
