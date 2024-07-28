@@ -40,55 +40,12 @@ const configuration = {
   },
 };
 
-const screensApi = {
-  Screen1: {
-    number: 1024,
-    answer: "owo",
-  },
-  Screen2: {
-    number: 3072,
-    answer: "owo",
-  },
-  Screen3: {
-    number: 16384,
-    answer: "owo",
-  },
-  Screen4: {
-    number: 15072,
-    answer: "owo",
-  },
-  Screen5: {
-    number: 2048,
-    answer: "owo",
-  },
-  Screen6: {
-    number: 640,
-    answer: "owo",
-  },
-  Screen7: {
-    number: 128,
-    answer: "owo",
-  },
-  Screen8: {
-    number: 5124,
-    answer: "owo",
-  },
-  Screen9: {
-    number: 22,
-    answer: "owo",
-  },
-  Screen10: {
-    number: 876,
-    answer: "owo",
-  },
-};
-
 const euid = generateUUID();
 
 export default function SceneViewer() {
   const canvas = useRef(null);
   const [loaded, setLoaded] = useState(false);
-  const [focus, setFocus] = useState(false);
+  const [screensApi, setScreens] = useState({});
   const { uuid } = useParams();
 
   /** @type {Web3} */
@@ -145,8 +102,12 @@ export default function SceneViewer() {
     const [ex, ey, ez] = configuration.camera.eye;
     context.camera.position.set(cx, cy, cz);
     context.camera.lookAt(ex, ey, ez);
-    setFocus(false);
   };
+
+  useEffect(() => {
+    txrx.subscribe("players:riddle", setScreens);
+    return () => txrx.unsubscribe("players:riddle", setScreens);
+  }, [txrx, setScreens]);
 
   return (
     <>
@@ -160,12 +121,14 @@ export default function SceneViewer() {
           style={{
             position: "fixed",
             top: 0,
+            left: 0,
             right: 0,
             zIndex: 10,
-            padding: "10px",
+            padding: "0.25rem",
             width: "10rem",
             backgroundColor: "white",
-            margin: "1rem",
+            margin: "1rem auto",
+            border: "1px solid black",
           }}
         >
           <p
@@ -192,16 +155,22 @@ export default function SceneViewer() {
               scene={context.scene}
               screenId={key}
               screenData={terminals[key]}
-              riddle={screensApi[key]}
+              riddle={screensApi[key] || {}}
               rcaster={rcaster}
-              setFocusing={setFocus}
               transceiver={txrx}
               unfocus={unfocus}
             />
           ))}
       </div>
       <button
-        className={c("btn-unfocus", "begin-btn", "bg-white", "p-2")}
+        className={c(
+          "btn-unfocus",
+          "begin-btn",
+          "bg-white",
+          "mt-4",
+          "p-1",
+          "w-[6rem]"
+        )}
         onClick={unfocus}
       >
         unfocus (Esc)

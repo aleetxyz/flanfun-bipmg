@@ -19,9 +19,27 @@ const c = classnames.bind(styles);
  * @param {string} props.aspect
  * @returns {JSX.Element}
  */
+
+if (!window.OffscreenCanvas) {
+  window.OffscreenCanvas = class OffscreenCanvas {
+    constructor(width, height) {
+      this.canvas = document.createElement("canvas");
+      this.canvas.width = width;
+      this.canvas.height = height;
+
+      this.canvas.convertToBlob = () => {
+        return new Promise((resolve) => {
+          this.canvas.toBlob(resolve);
+        });
+      };
+
+      return this.canvas;
+    }
+  };
+}
+
 export default function InputTerminal(props) {
   const { rcaster, scene, context, screenId, screenData, riddle } = props;
-  const { setFocusing } = props;
   const { transceiver } = props;
 
   const textureLoader = useInstance(TextureLoader);
@@ -64,20 +82,18 @@ export default function InputTerminal(props) {
 
   const onRaycast = useCallback(
     (name) => {
-      console.log(name);
       if (name === screenId) {
         focus.current.focus();
         focusOnTerminal();
-        setFocusing(true);
       }
     },
-    [focusOnTerminal, setFocusing, screenId]
+    [focusOnTerminal, screenId]
   );
 
   useEffect(() => {
     rcaster.subscribe("raycast_result", onRaycast);
     return () => rcaster.unsubscribe("raycast_result", onRaycast);
-  }, [rcaster, screenId, focusOnTerminal, setFocusing, onRaycast]);
+  }, [rcaster, screenId, focusOnTerminal, onRaycast]);
 
   const onTextMP = useCallback(
     (data) => {
@@ -116,7 +132,7 @@ export default function InputTerminal(props) {
 
         object3d.material.emissive = new Color(parseInt(0xffffff));
         object3d.material.color = new Color(parseInt(0xffffff));
-        object3d.material.emissiveIntensity = 1.0;
+        object3d.material.emissiveIntensity = 1.5;
         object3d.material.emissiveMap = texture;
         object3d.material.map = texture;
         object3d.material.needsUpdate = true;

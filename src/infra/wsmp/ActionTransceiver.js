@@ -61,6 +61,14 @@ export default function PlayersTransceiver(wsmp) {
     }
   };
 
+  const handlePlayersRiddle = (screens) => {
+    try {
+      this.notify("players:riddle", screens);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   /** start listening to messages from the server */
   const startReception = (socket) => {
     /** pre-scene event: players that are already in */
@@ -73,6 +81,8 @@ export default function PlayersTransceiver(wsmp) {
     socket.on("player:move", handlePlayerMove);
     /** WHEN PLAYER SCORES A MOVE */
     socket.on("players:state", handlePlayerScore);
+    /* WHEN RIDDLES ARE REDI */
+    socket.on("players:riddle", handlePlayersRiddle);
   };
 
   /** WHEN PLAYER IS CONNECTED, BEGIN EVENT RECEPTION */
