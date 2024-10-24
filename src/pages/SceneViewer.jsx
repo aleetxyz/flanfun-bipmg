@@ -21,7 +21,6 @@ import { AmbientLight } from "three";
 import style from "pages/minigames/bip39/bip39.module.scss";
 import { generateUUID } from "three/src/math/MathUtils";
 
-const { VITE_APP_STATIC_URL } = import.meta.env;
 const c = classnames.bind(style);
 
 const configuration = {
@@ -32,11 +31,11 @@ const configuration = {
     orbit: { minDst: 1, maxDst: 2.5 },
   },
   scene: {
-    gltf: `${VITE_APP_STATIC_URL}/scenes/$flan_desk/draco.glb`,
-    rgbe: `${VITE_APP_STATIC_URL}/hdri/royal_esplanade_1k.hdr`,
+    gltf: `/scene/desktop.glb`,
+    rgbe: `/scene/royal_esplanade_1k.hdr`,
   },
   fonts: {
-    primary: `${VITE_APP_STATIC_URL}/fonts/segment.ttf`,
+    primary: `/fonts/segment.ttf`,
   },
 };
 
